@@ -42,7 +42,6 @@ Image* copy_image(Image* img) {
     return copy;
 }
 
-// Алгоритм 1: Взвешенное усреднение с частичным перекрытием
 Image* algorithm1_weighted_averaging(Image* source, int k1, int m1) {
     int k0 = source->rows;
     int m0 = source->cols;
@@ -93,7 +92,6 @@ Image* algorithm1_weighted_averaging(Image* source, int k1, int m1) {
     return result;
 }
 
-// Алгоритм 2: Простое усреднение с целыми границами
 Image* algorithm2_simple_averaging(Image* source, int k1, int m1) {
     int k0 = source->rows;
     int m0 = source->cols;

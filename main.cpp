@@ -3,6 +3,7 @@
 #include "algorithms.h"
 #include <string.h>
 #include <stdlib.h>
+#include <clocale>
 
 void interactive_mode() {
     printf("Интерактивный режим\n");
@@ -81,16 +82,14 @@ void interactive_mode() {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc > 1 && strcmp(argv[1], "test") == 0) {
-        // Режим тестирования
+    setlocale(LC_ALL, "Russian");
+;    if (argc > 1 && strcmp(argv[1], "test") == 0) {
         run_all_tests();
     }
     else if (argc > 1 && strcmp(argv[1], "interactive") == 0) {
-        // Интерактивный режим
         interactive_mode();
     }
     else {
-        // По умолчанию запускаем тесты
         printf("Использование:\n");
         printf("  %s test         - запустить все тесты\n", argv[0]);
         printf("  %s interactive  - интерактивный режим\n", argv[0]);

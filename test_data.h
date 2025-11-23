@@ -11,7 +11,6 @@ typedef struct {
     Image* expected_output;
 } TestCase;
 
-// Изменили первый параметр на const char*
 TestCase* create_test_case(const char* name, int** data, int rows, int cols,
     int target_rows, int target_cols, int** expected);
 void free_test_case(TestCase* test);
