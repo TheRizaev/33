@@ -93,34 +93,48 @@ Image* algorithm1_weighted_averaging(Image* source, int k1, int m1) {
 }
 
 Image* algorithm2_simple_averaging(Image* source, int k1, int m1) {
-    int k0 = source->rows;
-    int m0 = source->cols;
+    int k0 = source->rows;  // высота исходного изображени€
+    int m0 = source->cols;  // ширина исходного изображени€
 
     Image* result = create_image(k1, m1);
 
     for (int i = 0; i < k1; i++) {
+        // ÷ентр пиксел€ в новом изображении -> координата по высоте в старом
+        double src_y = ((i + 0.5) * k0 / (double)k1) - 0.5;
+        if (src_y < 0) src_y = 0;
+        if (src_y > k0 - 1) src_y = k0 - 1;
+
+        int y0 = (int)src_y;
+        int y1 = y0 + 1;
+        if (y1 >= k0) y1 = k0 - 1;
+
+        double fy = src_y - y0;  // дробна€ часть по высоте
+
         for (int j = 0; j < m1; j++) {
-            int row_start = (i * k0) / k1;
-            int row_end = ((i + 1) * k0 + k1 - 1) / k1;
-            int col_start = (j * m0) / m1;
-            int col_end = ((j + 1) * m0 + m1 - 1) / m1;
+            // ÷ентр пиксел€ в новом изображении -> координата по ширине в старом
+            double src_x = ((j + 0.5) * m0 / (double)m1) - 0.5;
+            if (src_x < 0) src_x = 0;
+            if (src_x > m0 - 1) src_x = m0 - 1;
 
-            if (row_end > k0) row_end = k0;
-            if (col_end > m0) col_end = m0;
+            int x0 = (int)src_x;
+            int x1 = x0 + 1;
+            if (x1 >= m0) x1 = m0 - 1;
 
-            int black_count = 0;
-            int total_count = 0;
+            double fx = src_x - x0;  // дробна€ часть по ширине
 
-            for (int r = row_start; r < row_end; r++) {
-                for (int c = col_start; c < col_end; c++) {
-                    total_count++;
-                    if (source->data[r][c] == 1) {
-                        black_count++;
-                    }
-                }
-            }
+            // «начени€ 4 соседей (0 или 1)
+            int s00 = source->data[y0][x0];
+            int s01 = source->data[y0][x1];
+            int s10 = source->data[y1][x0];
+            int s11 = source->data[y1][x1];
 
-            result->data[i][j] = (black_count * 2 >= total_count) ? 1 : 0;
+            // ƒвухлинейна€ интерпол€ци€ в [0,1]
+            double v0 = s00 * (1.0 - fx) + s01 * fx;
+            double v1 = s10 * (1.0 - fx) + s11 * fx;
+            double v = v0 * (1.0 - fy) + v1 * fy;
+
+            // Ѕинаризаци€: 0 или 1
+            result->data[i][j] = (v >= 0.5) ? 1 : 0;
         }
     }
 
